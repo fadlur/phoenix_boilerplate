@@ -1,0 +1,72 @@
+<header class="sticky bg-white top-0 left-0 w-full flex items-center z-10">
+  <div class="container">
+    <div class="flex items-center justify-between relative">
+      <div class="px-4">
+        <.link navigate={~p"/"} class="font-bold text-lg text-primary block py-6">
+          <img src="/images/logo/logo.svg" alt="logo" class="max-h-[40px]" />
+        </.link>
+      </div>
+      <div class="flex items-center px-4">
+        <span
+          class="relative block h-5.5 w-5.5 cursor-pointer lg:hidden"
+          phx-click={PhoenixBoilerplateWeb.Layouts.App.toggle_menu_dropdown("#nav-menu")}
+        >
+          <span class="du-block absolute right-0 h-full w-full">
+            <span class="hmbgr-item relative left-0 top-0 my-1 block h-0.5 w-full rounded-sm bg-black delay-[0] duration-200 ease-in-out">
+            </span>
+            <span class="hmbgr-item relative left-0 top-0 my-1 block h-0.5 w-full rounded-sm bg-black delay-150 duration-200 ease-in-out">
+            </span>
+            <span class="hmbgr-item relative left-0 top-0 my-1 block h-0.5 w-full rounded-sm bg-black delay-200 duration-200 ease-in-out">
+            </span>
+          </span>
+        </span>
+
+        <nav
+          id="nav-menu"
+          class="hidden absolute py-5 bg-white shadow-lg rounded-lg max-w-[250px] w-full right-4 top-full lg:block lg:static lg:bg-transparent lg:max-w-full lg:shadow-none lg:rounded-none"
+        >
+          <ul class="block lg:flex">
+            <li class="group">
+              <.link
+                navigate={~p"/"}
+                class="text-base lg:text-dark text-black py-2 mx-8 flex group-hover:text-slate-700"
+              >
+                Beranda
+              </.link>
+            </li>
+            <li class="group">
+              <.link
+                href="#home"
+                class="text-base lg:text-dark text-black py-2 mx-8 flex group-hover:text-slate-700"
+              >
+                Contact
+              </.link>
+            </li>
+            <%= if @current_user != nil do %>
+              <li class="group">
+                <.link
+                  href={~p"/logout"}
+                  method="delete"
+                  class="text-base lg:text-dark text-black py-2 mx-8 flex group-hover:text-slate-700"
+                >
+                  Logout
+                </.link>
+              </li>
+            <% else %>
+              <li class="group">
+                <.link
+                  navigate={~p"/login"}
+                  class="text-base lg:text-dark text-black py-2 mx-8 flex group-hover:text-slate-700"
+                >
+                  Login
+                </.link>
+              </li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+<.flash_group flash={@flash} />
+<%= @inner_content %>

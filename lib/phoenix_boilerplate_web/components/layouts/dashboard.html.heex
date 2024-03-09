@@ -1,0 +1,13 @@
+<.flash_group flash={@flash} />
+
+<div class="flex h-screen overflow-hidden">
+  <%!-- sidebar start --%>
+  <PhoenixBoilerplateWeb.PartialComponents.sidebar current_user={@current_user} />
+  <%!-- sidebar end --%>
+  <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+    <%!-- header start --%>
+    <PhoenixBoilerplateWeb.PartialComponents.header current_user={@current_user} />
+    <%!-- header end --%>
+    <%= @inner_content %>
+  </div>
+</div>
