@@ -15,6 +15,7 @@ defmodule PhoenixBoilerplateWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_api_user
   end
 
   scope "/", PhoenixBoilerplateWeb do

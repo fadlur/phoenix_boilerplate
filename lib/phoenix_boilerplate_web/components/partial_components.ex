@@ -349,7 +349,7 @@ defmodule PhoenixBoilerplateWeb.PartialComponents do
                       </clipPath>
                     </defs>
                   </svg>
-                  Transaksi
+                  Member
                 </.link>
               </li>
               <!-- Menu Item Calendar -->
