@@ -15,6 +15,10 @@ defmodule PhoenixBoilerplateWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :api_dashboard do
+    plug :accepts, ["json"]
     plug :fetch_api_user
   end
 
@@ -28,6 +32,16 @@ defmodule PhoenixBoilerplateWeb.Router do
   # scope "/api", PhoenixBoilerplateWeb do
   #   pipe_through :api
   # end
+
+  scope "/api", PhoenixBoilerplateWeb do
+    pipe_through :api
+    post "/auth", UserAuthController, :create
+  end
+
+  scope "/api", PhoenixBoilerplateWeb do
+    pipe_through :api_dashboard
+    get "/dashboard/profile", UserAuthController, :profile
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:phoenix_boilerplate, :dev_routes) do

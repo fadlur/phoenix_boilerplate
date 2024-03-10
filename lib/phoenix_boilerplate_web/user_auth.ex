@@ -232,7 +232,8 @@ defmodule PhoenixBoilerplateWeb.UserAuth do
     else
       _ ->
         conn
-        |> send_resp(:unauthorized, "No access for you")
+        |> put_status(:unauthorized)
+        |> json(%{status: false, message: "Unauthorized", data: nil, errors: nil})
         |> halt()
     end
   end

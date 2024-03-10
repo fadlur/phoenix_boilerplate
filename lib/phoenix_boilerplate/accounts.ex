@@ -4,6 +4,7 @@ defmodule PhoenixBoilerplate.Accounts do
   """
 
   import Ecto.Query, warn: false
+  require Logger
   alias PhoenixBoilerplate.Repo
 
   alias PhoenixBoilerplate.Accounts.{User, UserToken, UserNotifier}

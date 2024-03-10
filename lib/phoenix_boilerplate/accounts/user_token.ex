@@ -1,6 +1,7 @@
 defmodule PhoenixBoilerplate.Accounts.UserToken do
   use Ecto.Schema
   import Ecto.Query
+  require Logger
   alias PhoenixBoilerplate.Accounts.UserToken
 
   @hash_algorithm :sha256
@@ -111,6 +112,7 @@ defmodule PhoenixBoilerplate.Accounts.UserToken do
     case Base.url_decode64(token, padding: false) do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
+        Logger.debug("decoded token: "<>decoded_token)
         days = days_for_context(context)
 
         query =
@@ -126,6 +128,7 @@ defmodule PhoenixBoilerplate.Accounts.UserToken do
     end
   end
 
+  defp days_for_context("api-token"), do: 365
   defp days_for_context("confirm"), do: @confirm_validity_in_days
   defp days_for_context("reset_password"), do: @reset_password_validity_in_days
 
