@@ -26,7 +26,13 @@
                 Sign In to Phoenix
               </h2>
 
-              <.simple_form for={@form} id="login_form" action={~p"/login"} phx-update="ignore">
+              <.simple_form
+                for={@form}
+                id="login_form"
+                action={~p"/login"}
+                phx-change="validate"
+                phx-hook="PasswordFieldHandler"
+              >
                 <div class="mb-4">
                   <label class="mb-2.5 block font-medium text-black dark:text-white">Email</label>
                   <div class="relative">
@@ -59,17 +65,21 @@
 
                 <div class="mb-6">
                   <label class="mb-2.5 block font-medium text-black dark:text-white">
-                    Re-type Password
+                    Password
                   </label>
                   <div class="relative">
                     <.input
                       field={@form[:password]}
                       type="password"
+                      id="reg_password"
                       placeholder="6+ Characters"
                       required
                     />
 
-                    <span class="absolute right-4 top-4">
+                    <span
+                      class="absolute right-4 top-4 cursor-pointer"
+                      phx-click="toggle_password"
+                    >
                       <svg
                         class="fill-current"
                         width="22"

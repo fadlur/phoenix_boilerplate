@@ -46,6 +46,22 @@ defmodule PhoenixBoilerplateWeb.UserRegistrationLive do
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
 
+  def handle_event("toggle_password", _, socket) do
+    socket =
+      socket
+      |> push_event("show_password", %{})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("toggle_password_confirmation", _, socket) do
+    socket =
+      socket
+      |> push_event("show_password_confirmation", %{})
+
+    {:noreply, socket}
+  end
+
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     form = to_form(changeset, as: "user")
 

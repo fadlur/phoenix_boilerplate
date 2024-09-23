@@ -112,7 +112,7 @@ defmodule PhoenixBoilerplate.Accounts.UserToken do
     case Base.url_decode64(token, padding: false) do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
-        Logger.debug("decoded token: "<>decoded_token)
+        Logger.debug("decoded token: " <> decoded_token)
         days = days_for_context(context)
 
         query =

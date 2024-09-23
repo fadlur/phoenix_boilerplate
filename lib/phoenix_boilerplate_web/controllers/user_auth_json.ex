@@ -1,5 +1,6 @@
 defmodule PhoenixBoilerplateWeb.UserAuthJSON do
   alias PhoenixBoilerplate.Repo
+
   defp data_user_logged_in(user, token) do
     %{
       token: token,
@@ -26,11 +27,11 @@ defmodule PhoenixBoilerplateWeb.UserAuthJSON do
 
   def profile(%{user: user}) do
     user = Repo.preload(user, [:role])
+
     %{
       status: true,
       message: "ok",
-      data:
-      %{
+      data: %{
         user: %{
           first_name: user.first_name,
           last_name: user.last_name,
@@ -41,7 +42,6 @@ defmodule PhoenixBoilerplateWeb.UserAuthJSON do
           }
         }
       },
-
       errors: nil
     }
   end

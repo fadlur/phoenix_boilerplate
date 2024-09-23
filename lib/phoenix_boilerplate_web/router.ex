@@ -22,12 +22,6 @@ defmodule PhoenixBoilerplateWeb.Router do
     plug :fetch_api_user
   end
 
-  scope "/", PhoenixBoilerplateWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", PhoenixBoilerplateWeb do
   #   pipe_through :api
@@ -67,6 +61,7 @@ defmodule PhoenixBoilerplateWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{PhoenixBoilerplateWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      live "/", UserLoginLive, :new
       live "/register", UserRegistrationLive, :new
       live "/login", UserLoginLive, :new
       live "/reset_password", UserForgotPasswordLive, :new
