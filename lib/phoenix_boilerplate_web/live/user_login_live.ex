@@ -1,4 +1,5 @@
 defmodule PhoenixBoilerplateWeb.UserLoginLive do
+  alias PhoenixBoilerplate.Accounts
   alias PhoenixBoilerplate.Accounts.User
   use PhoenixBoilerplateWeb, :live_view
 
