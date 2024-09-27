@@ -7,6 +7,9 @@ defmodule PhoenixBoilerplate.Accounts.User do
     field :first_name, :string
     field :last_name, :string
     field :email, :string
+    field :phone_code, :string
+    field :phone, :string
+    field :phone_number, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
@@ -43,7 +46,7 @@ defmodule PhoenixBoilerplate.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:first_name, :last_name, :email, :password])
+    |> cast(attrs, [:first_name, :last_name, :email, :phone_code, :phone, :phone_number, :password])
     |> validate_required([:first_name])
     |> validate_email(opts)
     |> validate_password(opts)
@@ -61,7 +64,7 @@ defmodule PhoenixBoilerplate.Accounts.User do
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 72)
+    |> validate_length(:password, min: 8, max: 72)
     # Examples of additional password validation:
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")

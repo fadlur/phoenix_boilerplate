@@ -8,6 +8,9 @@ defmodule PhoenixBoilerplate.Repo.Migrations.CreateUsersAuthTables do
       add :first_name, :string, null: false
       add :last_name, :string, null: true
       add :email, :citext, null: false
+      add :phone_code, :string, null: true
+      add :phone, :string, null: true
+      add :phone_number, :string, null: true
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime
       add :deleted_at, :utc_datetime

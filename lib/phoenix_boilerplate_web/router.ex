@@ -71,13 +71,15 @@ defmodule PhoenixBoilerplateWeb.Router do
     post "/login", UserSessionController, :create
   end
 
-  scope "/", PhoenixBoilerplateWeb do
+  scope "/dashboard", PhoenixBoilerplateWeb do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :authenticated,
       on_mount: {PhoenixBoilerplateWeb.UserAuth, :ensure_authenticated} do
       # dashboard
-      live "/dashboard", MemberLive, :index
+      live "/", MemberLive, :index
+      # account setting
+      live "/account/setting", AccountSettingLive, :index
     end
   end
 

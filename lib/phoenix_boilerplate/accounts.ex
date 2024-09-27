@@ -451,6 +451,11 @@ defmodule PhoenixBoilerplate.Accounts do
     Role.changeset(role, attrs)
   end
 
+  def fetch_role_by_name(name) do
+    query = from(r in Role, where: r.name == ^name)
+    Repo.one(query)
+  end
+
   alias PhoenixBoilerplate.Accounts.UserRole
 
   @doc """

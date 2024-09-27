@@ -189,8 +189,8 @@ defmodule PhoenixBoilerplateWeb.PartialComponents do
           </a>
         </li>
         <li>
-          <a
-            href="settings.html"
+          <.link
+            patch={~p"/dashboard/account/setting"}
             class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
           >
             <svg
@@ -211,7 +211,7 @@ defmodule PhoenixBoilerplateWeb.PartialComponents do
               />
             </svg>
             Account Settings
-          </a>
+          </.link>
         </li>
       </ul>
       <.link

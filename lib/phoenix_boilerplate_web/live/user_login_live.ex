@@ -24,6 +24,7 @@ defmodule PhoenixBoilerplateWeb.UserLoginLive do
 
     {:noreply, socket}
   end
+
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     form = to_form(changeset, as: "user")
 
