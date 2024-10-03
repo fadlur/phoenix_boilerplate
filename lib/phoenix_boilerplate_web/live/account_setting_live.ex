@@ -1,4 +1,6 @@
 defmodule PhoenixBoilerplateWeb.AccountSettingLive do
+  alias PhoenixBoilerplate.Repo
+  alias PhoenixBoilerplate.Accounts.User
   alias PhoenixBoilerplateWeb.CustomComponents
   alias PhoenixBoilerplate.Accounts
   use PhoenixBoilerplateWeb, :live_view
@@ -116,29 +118,38 @@ defmodule PhoenixBoilerplateWeb.AccountSettingLive do
                       >
                         Phone Number
                       </label>
-                      <div class="relative">
-                        <span class="absolute left-4.5 top-4">
-                          <svg
-                            class="w-6 h-6 text-gray-800 dark:text-white"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M6 15h12M6 6h12m-6 12h0m-5 3h10c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H7a1 1 0 0 0-1 1v16c0 .6.4 1 1 1Z"
-                            />
-                          </svg>
-                        </span>
-                        <CustomComponents.input_custom
-                          field={@email_form[:phone_number]}
-                          type="number"
-                          required
-                        />
+                      <div class="flex items-center space-x-2">
+                        <div class="relative w-28">
+                          <span class="absolute left-4.5 top-4">
+                            <svg
+                              class="w-6 h-6 text-gray-800 dark:text-white"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 15h12M6 6h12m-6 12h0m-5 3h10c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H7a1 1 0 0 0-1 1v16c0 .6.4 1 1 1Z"
+                              />
+                            </svg>
+                          </span>
+                          <CustomComponents.input_custom
+                            field={@email_form[:phone_code]}
+                            type="number"
+                            required
+                          />
+                        </div>
+                        <div class="flex-1">
+                          <CustomComponents.input_custom
+                            field={@email_form[:phone]}
+                            type="number"
+                            required
+                          />
+                        </div>
                       </div>
                     </div>
 
@@ -209,27 +220,21 @@ defmodule PhoenixBoilerplateWeb.AccountSettingLive do
                         </span>
 
                         <CustomComponents.input_custom
-                          field={@email_form[:current_password]}
+                          field={@email_form[:password]}
                           id="current_password_for_email"
                           type="password"
                           required
-                          value={@email_form_current_password}
+                          value={}
                         />
                       </div>
                     </div>
 
                     <div class="flex justify-end gap-4.5">
                       <button
-                        class="flex justify-center rounded border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                        type="submit"
-                      >
-                        Cancel
-                      </button>
-                      <button
                         class="flex justify-center rounded bg-primary px-6 py-2 font-medium text-gray hover:bg-opacity-90"
                         type="submit"
                       >
-                        Save
+                        Update
                       </button>
                     </div>
                   </.simple_form>
@@ -482,7 +487,7 @@ defmodule PhoenixBoilerplateWeb.AccountSettingLive do
 
   def mount(_params, _session, socket) do
     user = socket.assigns.current_user
-    email_changeset = Accounts.change_user_email(user)
+    email_changeset = Accounts.change_user_registration(user)
     password_changeset = Accounts.change_user_password(user)
 
     socket =
@@ -502,15 +507,88 @@ defmodule PhoenixBoilerplateWeb.AccountSettingLive do
     {:noreply, socket}
   end
 
-  def handle_event("validate_email", params, socket) do
-    %{"user" => user_params} = params
-
+  def handle_event("validate_email", %{"user" => user_params}, socket) do
     email_form =
       socket.assigns.current_user
-      |> Accounts.change_user_email(user_params)
+      |> Accounts.change_user_registration(user_params)
       |> Map.put(:action, :validate)
       |> to_form()
 
     {:noreply, assign(socket, email_form: email_form, email_form_current_password: nil)}
+  end
+
+  def handle_event("update_email", %{"user" => user_params}, socket) do
+    changeset =
+      socket.assigns.current_user
+      |> Accounts.change_user_registration(user_params)
+      |> Map.put(:action, :insert)
+
+    if changeset.valid? do
+      # validate password
+      validate_email_and_update(user_params, changeset, socket)
+    else
+      handle_invalid_changeset(changeset, socket)
+    end
+  end
+
+  defp validate_email_and_update(user_params, changeset, socket) do
+    if user =
+         Accounts.get_user_by_email_and_password(
+           socket.assigns.current_user.email,
+           user_params["password"]
+         ) do
+      # validate email
+      case Repo.get_by(User, email: user_params["email"]) do
+        user_by_email when user_by_email.id != socket.assigns.current_user.id ->
+          handle_email_already_taken(changeset, socket)
+
+        nil ->
+          handle_update_user(user, user_params, changeset, socket)
+
+        _ ->
+          handle_update_user(user, user_params, changeset, socket)
+      end
+    else
+      socket =
+        socket |> assign(email_form: to_form(changeset)) |> put_flash(:error, "Password invalid")
+
+      noreply(socket)
+    end
+  end
+
+  defp handle_update_user(user, user_params, changeset, socket) do
+    case Accounts.update_user_account(user, user_params) do
+      {:ok, _new_user} ->
+        socket =
+          socket
+          |> assign(email_form: to_form(changeset))
+          |> put_flash(:info, "Data berhasil diupdate")
+
+        noreply(socket)
+
+      {:error, _} ->
+        socket =
+          socket
+          |> assign(email_form: to_form(changeset))
+          |> put_flash(:error, "Data gagal diupdate")
+
+        noreply(socket)
+    end
+  end
+
+  defp handle_email_already_taken(changeset, socket) do
+    socket =
+      socket
+      |> assign(email_form: to_form(changeset))
+      |> put_flash(:error, "Email sudah diambil")
+
+    noreply(socket)
+  end
+
+  defp noreply(socket), do: {:noreply, socket}
+
+  defp handle_invalid_changeset(changeset, socket) do
+    socket = socket |> assign(email_form: to_form(changeset)) |> put_flash(:info, "Cek form")
+    {:noreply, socket}
   end
 end

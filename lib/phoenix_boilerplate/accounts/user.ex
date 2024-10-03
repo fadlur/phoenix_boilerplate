@@ -46,11 +46,34 @@ defmodule PhoenixBoilerplate.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:first_name, :last_name, :email, :phone_code, :phone, :phone_number, :password])
-    |> validate_required([:first_name])
+    |> cast(attrs, [
+      :first_name,
+      :last_name,
+      :email,
+      :phone_code,
+      :phone,
+      :phone_number,
+      :password
+    ])
+    |> validate_required([:first_name, :phone_code, :phone])
     |> validate_email(opts)
     |> validate_password(opts)
     |> validate_confirmation(:password, message: "does not match password")
+  end
+
+  def user_account_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [
+      :first_name,
+      :last_name,
+      :email,
+      :phone_code,
+      :phone,
+      :phone_number,
+      :password
+    ])
+    |> validate_required([:first_name, :phone_code, :phone])
+    |> validate_email(opts)
   end
 
   defp validate_email(changeset, opts) do

@@ -580,4 +580,10 @@ defmodule PhoenixBoilerplate.Accounts do
       _ -> :error
     end
   end
+
+  def update_user_account(user, attr) do
+    user
+    |> User.user_account_changeset(attr)
+    |> Repo.update()
+  end
 end
