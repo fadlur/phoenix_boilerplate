@@ -251,8 +251,6 @@ defmodule PhoenixBoilerplateWeb.AccountSettingLive do
                   <.simple_form
                     for={@password_form}
                     id="password_form"
-                    action={~p"/login?_action=password_updated"}
-                    method="post"
                     phx-change="validate_password"
                     phx-submit="update_password"
                     phx-trigger-action={@trigger_submit}
@@ -364,16 +362,10 @@ defmodule PhoenixBoilerplateWeb.AccountSettingLive do
 
                     <div class="flex justify-end gap-4.5">
                       <button
-                        class="flex justify-center rounded border border-stroke px-6 py-2 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                        type="submit"
-                      >
-                        Cancel
-                      </button>
-                      <button
                         class="flex justify-center rounded bg-primary px-6 py-2 font-medium text-gray hover:bg-opacity-90"
                         type="submit"
                       >
-                        Save
+                        Update
                       </button>
                     </div>
                   </.simple_form>
@@ -529,6 +521,14 @@ defmodule PhoenixBoilerplateWeb.AccountSettingLive do
     else
       handle_invalid_changeset(changeset, socket)
     end
+  end
+
+  def handle_event("update_password", _params, socket) do
+    {:noreplay, socket}
+  end
+
+  def handle_event("validate_password", _params, socket) do
+    {:noreply, socket}
   end
 
   defp validate_email_and_update(user_params, changeset, socket) do
